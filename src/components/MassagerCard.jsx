@@ -2,27 +2,35 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 export default function MassagerCard({ massager }) {
-  const { id, name, gender, experience, rating, reviews, specialties, price, location, avatar, color, accentColor } = massager
+  const { id, name, gender, experience, rating, reviews, specialties, price, location, photo, avatar, color, accentColor } = massager
 
   return (
     <div className="card group cursor-pointer">
       <Link to={`/massagers/${id}`}>
         <div className="relative">
-          <div
-            className="h-48 flex items-center justify-center"
-            style={{ backgroundColor: color }}
-          >
+          <div className="h-56 relative overflow-hidden bg-stone-100">
+            {photo ? (
+              <img
+                src={photo}
+                alt={name}
+                className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: color }}>
+                <div
+                  className="w-24 h-24 rounded-full flex items-center justify-center text-3xl font-bold shadow-md"
+                  style={{ backgroundColor: accentColor, color: '#fff' }}
+                >
+                  {avatar}
+                </div>
+              </div>
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
             <div
-              className="w-24 h-24 rounded-full flex items-center justify-center text-3xl font-bold shadow-md"
-              style={{ backgroundColor: accentColor, color: '#fff' }}
-            >
-              {avatar}
-            </div>
-            <div
-              className={`absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-semibold ${
+              className={`absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-semibold backdrop-blur-sm ${
                 gender === 'female'
-                  ? 'bg-pink-100 text-pink-700'
-                  : 'bg-blue-100 text-blue-700'
+                  ? 'bg-pink-500/90 text-white'
+                  : 'bg-blue-600/90 text-white'
               }`}
             >
               {gender === 'female' ? '♀ Female' : '♂ Male'}

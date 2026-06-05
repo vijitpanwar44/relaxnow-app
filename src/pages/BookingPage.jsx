@@ -98,12 +98,16 @@ export default function BookingPage() {
 
       {/* Massager Summary */}
       <div className="bg-white rounded-2xl p-4 shadow-sm mb-8 flex items-center gap-4">
-        <div
-          className="w-14 h-14 rounded-xl flex items-center justify-center text-xl font-bold text-white shrink-0"
-          style={{ backgroundColor: massager.accentColor }}
-        >
-          {massager.avatar}
-        </div>
+        {massager.photo ? (
+          <img src={massager.photo} alt={massager.name} className="w-14 h-14 rounded-xl object-cover object-top shrink-0" />
+        ) : (
+          <div
+            className="w-14 h-14 rounded-xl flex items-center justify-center text-xl font-bold text-white shrink-0"
+            style={{ backgroundColor: massager.accentColor }}
+          >
+            {massager.avatar}
+          </div>
+        )}
         <div className="flex-1">
           <h2 className="font-semibold text-stone-800">{massager.name}</h2>
           <p className="text-stone-500 text-sm">{massager.specialties.join(' · ')}</p>

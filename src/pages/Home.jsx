@@ -153,12 +153,20 @@ export default function Home() {
             <Link key={m.id} to={`/massagers/${m.id}`}>
               <div className="card group p-6">
                 <div className="flex items-center gap-4 mb-4">
-                  <div
-                    className="w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold text-white"
-                    style={{ backgroundColor: m.accentColor }}
-                  >
-                    {m.avatar}
-                  </div>
+                  {m.photo ? (
+                    <img
+                      src={m.photo}
+                      alt={m.name}
+                      className="w-14 h-14 rounded-full object-cover object-top"
+                    />
+                  ) : (
+                    <div
+                      className="w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold text-white"
+                      style={{ backgroundColor: m.accentColor }}
+                    >
+                      {m.avatar}
+                    </div>
+                  )}
                   <div>
                     <h4 className="font-semibold text-stone-800 group-hover:text-amber-700 transition-colors">
                       {m.name}

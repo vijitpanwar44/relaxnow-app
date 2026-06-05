@@ -23,7 +23,7 @@ export default function MassagerProfile() {
     )
   }
 
-  const { name, gender, age, experience, rating, reviews, specialties, bio, price, location, avatar, color, accentColor, languages } = massager
+  const { name, gender, age, experience, rating, reviews, specialties, bio, price, location, photo, avatar, color, accentColor, languages } = massager
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-10">
@@ -35,16 +35,33 @@ export default function MassagerProfile() {
       </Link>
 
       {/* Profile Header */}
-      <div className="card mb-6">
-        <div className="h-40 w-full" style={{ background: `linear-gradient(135deg, ${color} 0%, ${accentColor}33 100%)` }} />
-        <div className="px-6 pb-6 -mt-14">
+      <div className="card mb-6 overflow-hidden">
+        {/* Cover / Photo banner */}
+        {photo ? (
+          <div className="h-52 w-full relative overflow-hidden">
+            <img src={photo} alt={name} className="w-full h-full object-cover object-top" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+          </div>
+        ) : (
+          <div className="h-40 w-full" style={{ background: `linear-gradient(135deg, ${color} 0%, ${accentColor}33 100%)` }} />
+        )}
+
+        <div className="px-6 pb-6 -mt-14 relative">
           <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4">
-            <div
-              className="w-24 h-24 rounded-2xl flex items-center justify-center text-3xl font-bold text-white shadow-xl border-4 border-white"
-              style={{ backgroundColor: accentColor }}
-            >
-              {avatar}
-            </div>
+            {photo ? (
+              <img
+                src={photo}
+                alt={name}
+                className="w-24 h-24 rounded-2xl object-cover object-top shadow-xl border-4 border-white"
+              />
+            ) : (
+              <div
+                className="w-24 h-24 rounded-2xl flex items-center justify-center text-3xl font-bold text-white shadow-xl border-4 border-white"
+                style={{ backgroundColor: accentColor }}
+              >
+                {avatar}
+              </div>
+            )}
             <div className="flex-1 pb-1">
               <div className="flex items-center gap-3 flex-wrap">
                 <h1 className="text-3xl font-bold text-stone-800">{name}</h1>
