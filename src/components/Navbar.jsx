@@ -24,7 +24,22 @@ export default function Navbar() {
     navigate('/login')
   }
 
-  if (location.pathname === '/login') return null
+  if (location.pathname === '/login') {
+    return (
+      <nav className="bg-white border-b border-stone-200">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-amber-600 rounded-lg flex items-center justify-center">
+              <span className="text-white text-sm font-bold">R</span>
+            </div>
+            <span className="text-xl font-semibold text-stone-800" style={{ fontFamily: 'Playfair Display, serif' }}>
+              RelaxNow
+            </span>
+          </div>
+        </div>
+      </nav>
+    )
+  }
 
   return (
     <nav className="bg-white border-b border-stone-200 sticky top-0 z-50">

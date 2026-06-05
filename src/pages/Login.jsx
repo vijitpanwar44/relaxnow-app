@@ -74,12 +74,6 @@ export default function Login() {
       {/* Right panel */}
       <div className="flex-1 flex items-center justify-center px-6 py-12 bg-[#faf9f7]">
         <div className="w-full max-w-md">
-          <div className="text-center mb-8 lg:hidden">
-            <div className="w-12 h-12 bg-amber-600 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <span className="text-white text-2xl font-bold">R</span>
-            </div>
-          </div>
-
           <h1 className="text-3xl font-bold text-stone-800 mb-2">Welcome back</h1>
           <p className="text-stone-500 mb-8">Sign in to your RelaxNow account</p>
 
