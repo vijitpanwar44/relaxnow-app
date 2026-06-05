@@ -99,7 +99,7 @@ export default function BookingPage() {
       {/* Massager Summary */}
       <div className="bg-white rounded-2xl p-4 shadow-sm mb-8 flex items-center gap-4">
         {massager.photo ? (
-          <img src={massager.photo} alt={massager.name} className="w-14 h-14 rounded-xl object-cover object-top shrink-0" />
+          <img src={massager.photo} alt={massager.name} className="w-14 h-14 rounded-xl object-cover object-center shrink-0" />
         ) : (
           <div
             className="w-14 h-14 rounded-xl flex items-center justify-center text-xl font-bold text-white shrink-0"

@@ -39,7 +39,7 @@ export default function MassagerProfile() {
         {/* Cover / Photo banner */}
         {photo ? (
           <div className="h-52 w-full relative overflow-hidden">
-            <img src={photo} alt={name} className="w-full h-full object-cover object-top" />
+            <img src={photo} alt={name} className="w-full h-full object-cover object-center" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
           </div>
         ) : (
@@ -52,7 +52,7 @@ export default function MassagerProfile() {
               <img
                 src={photo}
                 alt={name}
-                className="w-24 h-24 rounded-2xl object-cover object-top shadow-xl border-4 border-white"
+                className="w-24 h-24 rounded-2xl object-cover object-center shadow-xl border-4 border-white"
               />
             ) : (
               <div
