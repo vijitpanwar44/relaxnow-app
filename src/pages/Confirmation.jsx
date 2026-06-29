@@ -97,15 +97,28 @@ export default function Confirmation() {
           )}
         </div>
 
-        <div className="mt-6 pt-4 border-t border-stone-100 flex justify-between items-center">
-          <div>
-            <p className="text-xs text-stone-400">Booking ID</p>
-            <p className="text-stone-600 font-mono text-sm">#{booking.id}</p>
+        <div className="mt-6 pt-4 border-t border-stone-100 space-y-3">
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-xs text-stone-400">Booking ID</p>
+              <p className="text-stone-600 font-mono text-sm">#{booking.bookingNo || booking.id}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-xs text-stone-400">{booking.paymentStatus === 'pay_on_arrival' ? 'Pay on Arrival' : 'Total Paid'}</p>
+              <p className="text-2xl font-bold text-amber-700">₹{booking.totalPrice.toLocaleString()}</p>
+            </div>
           </div>
-          <div className="text-right">
-            <p className="text-xs text-stone-400">Total Amount</p>
-            <p className="text-2xl font-bold text-amber-700">₹{booking.totalPrice.toLocaleString()}</p>
-          </div>
+          {booking.paymentId && (
+            <div className="bg-green-50 border border-green-200 rounded-lg px-3 py-2 flex items-center gap-2">
+              <svg className="w-4 h-4 text-green-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <p className="text-xs text-green-700 font-semibold">Payment Successful</p>
+                <p className="text-xs text-green-600 font-mono">{booking.paymentId}</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

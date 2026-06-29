@@ -1,8 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { formatDistance } from '../utils/geo.js'
 
-export default function MassagerCard({ massager }) {
-  const { id, name, gender, experience, rating, reviews, specialties, price, location, photo, avatar, color, accentColor } = massager
+export default function MassagerCard({ massager, distance }) {
+  const { id, name, gender, experience, rating, reviews, specialties, price, location, photo, avatar, color, accentColor, badges = [] } = massager
 
   return (
     <div className="card group cursor-pointer">
@@ -26,23 +27,46 @@ export default function MassagerCard({ massager }) {
               </div>
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-            <div
-              className={`absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-semibold backdrop-blur-sm ${
-                gender === 'female'
-                  ? 'bg-pink-500/90 text-white'
-                  : 'bg-blue-600/90 text-white'
-              }`}
-            >
-              {gender === 'female' ? '♀ Female' : '♂ Male'}
+            <div className="absolute top-3 right-3 flex flex-col items-end gap-1.5">
+              <span className={`px-2.5 py-1 rounded-full text-xs font-semibold backdrop-blur-sm ${
+                gender === 'female' ? 'bg-pink-500/90 text-white' : 'bg-blue-600/90 text-white'
+              }`}>
+                {gender === 'female' ? '♀ Female' : '♂ Male'}
+              </span>
+              {distance != null && (
+                <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-black/60 text-white backdrop-blur-sm flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  {formatDistance(distance)}
+                </span>
+              )}
             </div>
           </div>
 
           <div className="p-5">
             <div className="flex items-start justify-between mb-1">
-              <h3 className="text-lg font-semibold text-stone-800 group-hover:text-amber-700 transition-colors">
-                {name}
-              </h3>
-              <div className="flex items-center gap-1 text-sm">
+              <div>
+                <h3 className="text-lg font-semibold text-stone-800 group-hover:text-amber-700 transition-colors">
+                  {name}
+                </h3>
+                {badges.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {badges.includes('id_verified') && (
+                      <span className="inline-flex items-center gap-0.5 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">
+                        ✓ ID Verified
+                      </span>
+                    )}
+                    {badges.includes('certified') && (
+                      <span className="inline-flex items-center gap-0.5 text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-medium">
+                        🎓 Certified
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+              <div className="flex items-center gap-1 text-sm shrink-0 ml-2">
                 <span className="text-amber-500">★</span>
                 <span className="font-semibold text-stone-700">{rating}</span>
                 <span className="text-stone-400">({reviews})</span>

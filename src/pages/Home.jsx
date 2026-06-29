@@ -13,7 +13,7 @@ const services = [
 
 const stats = [
   { value: '500+', label: 'Happy Clients' },
-  { value: '6', label: 'Expert Massagers' },
+  { value: '9', label: 'Expert Massagers' },
   { value: '4.9★', label: 'Average Rating' },
   { value: '8+', label: 'Massage Types' },
 ]
@@ -44,7 +44,7 @@ export default function Home() {
             <p className="text-lg text-stone-300 mb-10 leading-relaxed">
               Choose from our certified male and female massage therapists. Book your ideal session with transparent pricing and flexible time slots.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-4">
               <Link
                 to="/massagers?gender=female"
                 className="flex items-center justify-center gap-3 bg-pink-500 hover:bg-pink-600 text-white font-semibold px-8 py-4 rounded-xl transition-all shadow-lg hover:shadow-xl active:scale-95"
@@ -58,6 +58,14 @@ export default function Home() {
               >
                 <span className="text-xl">♂</span>
                 Male Massagers
+              </Link>
+              <Link
+                to="/spas"
+                className="flex items-center justify-center gap-3 bg-amber-600 hover:bg-amber-500 text-white font-semibold px-8 py-4 rounded-xl transition-all shadow-lg hover:shadow-xl active:scale-95 relative"
+              >
+                <span className="text-xl">🧖</span>
+                Visit a Spa
+                <span className="absolute -top-2 -right-2 bg-white text-amber-600 text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none shadow">Soon</span>
               </Link>
             </div>
           </div>
@@ -78,40 +86,58 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Gender Choose */}
+      {/* Choose Mode */}
       <section className="max-w-6xl mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-stone-800 mb-3">Choose Your Massager</h2>
-          <p className="text-stone-500 text-lg">We respect your comfort — select the gender you prefer</p>
+          <h2 className="text-4xl font-bold text-stone-800 mb-3">How Would You Like to Relax?</h2>
+          <p className="text-stone-500 text-lg">At home with a verified therapist, or at a local spa — you choose</p>
         </div>
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-3 gap-6">
           <Link
             to="/massagers?gender=female"
-            className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-pink-50 to-rose-100 border-2 border-pink-200 hover:border-pink-400 p-8 flex items-center gap-6 transition-all hover:shadow-xl"
+            className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-pink-50 to-rose-100 border-2 border-pink-200 hover:border-pink-400 p-8 flex items-center gap-5 transition-all hover:shadow-xl"
           >
-            <div className="w-20 h-20 bg-pink-500 rounded-2xl flex items-center justify-center text-4xl shadow-lg group-hover:scale-105 transition-transform">
+            <div className="w-16 h-16 bg-pink-500 rounded-2xl flex items-center justify-center text-3xl shadow-lg group-hover:scale-105 transition-transform shrink-0">
               ♀
             </div>
             <div>
-              <h3 className="text-2xl font-bold text-pink-800 mb-1">Female Massagers</h3>
-              <p className="text-pink-600">{massagers.filter(m => m.gender === 'female').length} therapists available</p>
-              <span className="inline-block mt-3 text-sm font-semibold text-pink-700 group-hover:underline">
+              <h3 className="text-xl font-bold text-pink-800 mb-1">Female Therapist</h3>
+              <p className="text-pink-600 text-sm">{massagers.filter(m => m.gender === 'female').length} at-home therapists</p>
+              <span className="inline-block mt-2 text-sm font-semibold text-pink-700 group-hover:underline">
                 View profiles →
               </span>
             </div>
           </Link>
           <Link
             to="/massagers?gender=male"
-            className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-50 to-indigo-100 border-2 border-blue-200 hover:border-blue-400 p-8 flex items-center gap-6 transition-all hover:shadow-xl"
+            className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-50 to-indigo-100 border-2 border-blue-200 hover:border-blue-400 p-8 flex items-center gap-5 transition-all hover:shadow-xl"
           >
-            <div className="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center text-4xl text-white shadow-lg group-hover:scale-105 transition-transform">
+            <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-3xl text-white shadow-lg group-hover:scale-105 transition-transform shrink-0">
               ♂
             </div>
             <div>
-              <h3 className="text-2xl font-bold text-blue-800 mb-1">Male Massagers</h3>
-              <p className="text-blue-600">{massagers.filter(m => m.gender === 'male').length} therapists available</p>
-              <span className="inline-block mt-3 text-sm font-semibold text-blue-700 group-hover:underline">
+              <h3 className="text-xl font-bold text-blue-800 mb-1">Male Therapist</h3>
+              <p className="text-blue-600 text-sm">{massagers.filter(m => m.gender === 'male').length} at-home therapists</p>
+              <span className="inline-block mt-2 text-sm font-semibold text-blue-700 group-hover:underline">
                 View profiles →
+              </span>
+            </div>
+          </Link>
+          <Link
+            to="/spas"
+            className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-50 to-orange-100 border-2 border-amber-200 hover:border-amber-400 p-8 flex items-center gap-5 transition-all hover:shadow-xl"
+          >
+            <div className="absolute top-3 right-3">
+              <span className="bg-amber-600 text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">Soon</span>
+            </div>
+            <div className="w-16 h-16 bg-amber-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg group-hover:scale-105 transition-transform shrink-0">
+              🧖
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-amber-800 mb-1">Visit a Spa</h3>
+              <p className="text-amber-600 text-sm">Book a slot at a verified local spa</p>
+              <span className="inline-block mt-2 text-sm font-semibold text-amber-700 group-hover:underline">
+                See what's coming →
               </span>
             </div>
           </Link>
@@ -194,6 +220,35 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Spa Coming Soon teaser */}
+      <section className="max-w-6xl mx-auto px-4 py-16">
+        <div className="relative bg-gradient-to-br from-stone-800 to-stone-900 rounded-3xl overflow-hidden p-10 text-white flex flex-col md:flex-row items-center gap-8">
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute -top-10 -right-10 w-64 h-64 bg-amber-400 rounded-full blur-3xl" />
+          </div>
+          <div className="relative z-10 flex-1">
+            <span className="inline-flex items-center gap-2 bg-amber-600/80 text-white text-xs font-bold px-3 py-1.5 rounded-full mb-4 uppercase tracking-wider">
+              <span className="w-2 h-2 bg-amber-300 rounded-full animate-pulse" />
+              Coming Soon
+            </span>
+            <h2 className="text-3xl font-bold mb-3">Visit a Spa Near You</h2>
+            <p className="text-stone-300 leading-relaxed mb-2">
+              We're onboarding verified local spas in Noida & Greater Noida. Browse slots, book online, walk in.
+            </p>
+            <p className="text-stone-400 text-sm">Same platform. Same trust. Full spa experience.</p>
+          </div>
+          <div className="relative z-10 flex flex-col items-center gap-4 text-center shrink-0">
+            <div className="text-6xl">🧖</div>
+            <Link
+              to="/spas"
+              className="bg-amber-600 hover:bg-amber-500 text-white font-bold px-8 py-3 rounded-xl transition-colors"
+            >
+              See What's Coming
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="bg-gradient-to-r from-amber-600 to-amber-700 py-16 text-white text-center">
         <div className="max-w-2xl mx-auto px-4">
@@ -212,7 +267,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="bg-stone-900 text-stone-400 py-8 text-center text-sm">
-        <p>© 2026 RelaxNow. All rights reserved.</p>
+        <p>© 2026 Home Wellness. All rights reserved.</p>
         <p className="mt-1">Professional massage booking platform</p>
       </footer>
     </div>

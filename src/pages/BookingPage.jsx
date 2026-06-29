@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { massagers } from '../data/massagers.js'
 import { useBooking } from '../context/BookingContext.jsx'
@@ -39,6 +39,12 @@ export default function BookingPage() {
   const [step, setStep] = useState(1)
   const [form, setForm] = useState({ name: '', phone: '', email: '', notes: '' })
   const [errors, setErrors] = useState({})
+  const [apiSlots, setApiSlots] = useState([])
+  const [slotsLoading, setSlotsLoading] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [bookingError, setBookingError] = useState('')
+  const [termsAccepted, setTermsAccepted] = useState(false)
+  const [termsError, setTermsError] = useState(false)
 
   if (!massager) {
     return (
@@ -49,9 +55,21 @@ export default function BookingPage() {
     )
   }
 
+  // Fetch available slots from API when date changes
+  useEffect(() => {
+    if (!selectedDate || !massager) return
+    const dateKey = formatDate(selectedDate)
+    setSlotsLoading(true)
+    setApiSlots([])
+    fetch(`/api/massagers/${massager.id}/slots?date=${dateKey}`)
+      .then(r => r.json())
+      .then(({ slots }) => { setApiSlots(slots || []); setSlotsLoading(false) })
+      .catch(() => { setApiSlots([]); setSlotsLoading(false) })
+  }, [selectedDate, massager?.id])
+
   const dates = getDatesForNext7Days()
   const selectedDateKey = selectedDate ? formatDate(selectedDate) : null
-  const availableSlots = selectedDateKey ? (massager.timeSlots[selectedDateKey] || []) : []
+  const availableSlots = apiSlots
   const selectedDuration = massageDurations.find(d => d.value === duration)
   const totalPrice = Math.round(massager.price * selectedDuration.multiplier)
 
@@ -64,23 +82,33 @@ export default function BookingPage() {
     return Object.keys(e).length === 0
   }
 
-  const handleConfirm = () => {
+  const handleConfirmBooking = async () => {
     if (!validate()) return
-    const booking = addBooking({
-      massagerId: massager.id,
-      massagerName: massager.name,
-      massagerAvatar: massager.avatar,
-      massagerAccentColor: massager.accentColor,
-      date: selectedDateKey,
-      slot: selectedSlot,
-      duration,
-      totalPrice,
-      customerName: form.name,
-      customerPhone: form.phone,
-      customerEmail: form.email,
-      notes: form.notes,
-    })
-    navigate('/confirmation', { state: { booking } })
+    if (!termsAccepted) { setTermsError(true); return }
+    setTermsError(false)
+    setSubmitting(true)
+    setBookingError('')
+
+    try {
+      const booking = await addBooking({
+        massagerId: massager.id,
+        massagerName: massager.name,
+        massagerAvatar: massager.avatar,
+        massagerAccentColor: massager.accentColor,
+        date: selectedDateKey,
+        slot: selectedSlot,
+        duration,
+        totalPrice,
+        customerName: form.name,
+        customerPhone: form.phone,
+        customerEmail: form.email,
+        notes: form.notes,
+      })
+      navigate('/confirmation', { state: { booking } })
+    } catch (err) {
+      setBookingError(err.message || 'Booking failed. Please try again.')
+      setSubmitting(false)
+    }
   }
 
   const steps = ['Date & Time', 'Duration', 'Your Details']
@@ -150,19 +178,15 @@ export default function BookingPage() {
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2 mb-8">
             {dates.map((date) => {
               const key = formatDate(date)
-              const hasSlots = massager.timeSlots[key]?.length > 0
               const isSelected = selectedDate && formatDate(selectedDate) === key
               return (
                 <button
                   key={key}
-                  disabled={!hasSlots}
                   onClick={() => { setSelectedDate(date); setSelectedSlot(null) }}
                   className={`p-3 rounded-xl text-center transition-all border-2 ${
                     isSelected
                       ? 'bg-amber-600 border-amber-600 text-white'
-                      : hasSlots
-                      ? 'border-stone-200 hover:border-amber-400 text-stone-700'
-                      : 'border-stone-100 text-stone-300 cursor-not-allowed bg-stone-50'
+                      : 'border-stone-200 hover:border-amber-400 text-stone-700'
                   }`}
                 >
                   <div className="text-xs font-medium">{date.toLocaleDateString('en-IN', { weekday: 'short' })}</div>
@@ -178,7 +202,15 @@ export default function BookingPage() {
               <h3 className="text-xl font-semibold text-stone-800 mb-4">
                 Available Slots — {formatDateDisplay(selectedDate)}
               </h3>
-              {availableSlots.length > 0 ? (
+              {slotsLoading ? (
+                <div className="flex items-center gap-2 text-stone-400 py-4">
+                  <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                  </svg>
+                  Checking availability…
+                </div>
+              ) : availableSlots.length > 0 ? (
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
                   {availableSlots.map((slot) => (
                     <button
@@ -337,10 +369,70 @@ export default function BookingPage() {
             </div>
           </div>
 
+          {/* Terms & Conditions */}
+          <div className={`border rounded-xl p-4 mb-5 ${termsError ? 'border-red-300 bg-red-50' : 'border-stone-200 bg-stone-50'}`}>
+            <h4 className="font-semibold text-stone-800 text-sm mb-2 flex items-center gap-1.5">
+              <svg className="w-4 h-4 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Terms & Conditions
+            </h4>
+            <div className="text-xs text-stone-600 leading-relaxed space-y-1.5 mb-3 max-h-28 overflow-y-auto pr-1">
+              <p>RelaxNow is a professional massage therapy booking platform. By confirming this booking, you agree to the following:</p>
+              <p><strong>1. Therapeutic purpose only.</strong> This platform is strictly for booking licensed, professional therapeutic massage services. It must not be used for any sexual purpose, escort service, or any activity that violates Indian law.</p>
+              <p><strong>2. No sexual activity.</strong> Any form of sexual solicitation, sexual contact, or indecent behaviour towards a massage therapist is strictly prohibited and constitutes a criminal offence under the Indian Penal Code (IPC Sections 354, 354A, 509 and related provisions).</p>
+              <p><strong>3. User accountability.</strong> If the user engages in any illegal activity, sexually inappropriate behaviour, or any act that violates Indian law on the premises or during the session, the user shall be solely and entirely responsible for all legal, civil, and criminal consequences. RelaxNow, its owners, and its therapists bear no liability whatsoever for such conduct.</p>
+              <p><strong>4. Not a sex platform.</strong> RelaxNow is NOT and must not be treated as a sex platform or adult entertainment service. Any such misuse will result in immediate cancellation, reporting to law enforcement, and permanent ban from the platform.</p>
+              <p><strong>5. Consent.</strong> Therapists have the right to terminate a session at any time if they feel unsafe, uncomfortable, or if the client behaves inappropriately. No refund will be issued in such cases.</p>
+            </div>
+            <label className={`flex items-start gap-3 cursor-pointer group`}>
+              <input
+                type="checkbox"
+                checked={termsAccepted}
+                onChange={e => { setTermsAccepted(e.target.checked); if (e.target.checked) setTermsError(false) }}
+                className="mt-0.5 w-4 h-4 rounded border-stone-300 accent-amber-600 cursor-pointer shrink-0"
+              />
+              <span className="text-xs text-stone-700 leading-relaxed">
+                I have read and agree to the Terms & Conditions. I confirm that I am booking this session strictly for professional therapeutic massage purposes and will not engage in any illegal, sexual, or inappropriate activity. I understand that I alone will be legally responsible for any violation of Indian law during or in connection with this booking.
+              </span>
+            </label>
+            {termsError && (
+              <p className="text-red-500 text-xs mt-2 flex items-center gap-1">
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                You must accept the Terms & Conditions to proceed.
+              </p>
+            )}
+          </div>
+
+          {bookingError && (
+            <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl flex items-center gap-2 mb-4">
+              <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {bookingError}
+            </div>
+          )}
           <div className="flex justify-between">
-            <button onClick={() => setStep(2)} className="btn-outline">← Back</button>
-            <button onClick={handleConfirm} className="btn-primary">
-              Confirm Booking ✓
+            <button onClick={() => setStep(2)} className="btn-outline" disabled={submitting}>← Back</button>
+            <button onClick={handleConfirmBooking} disabled={submitting} className="btn-primary flex items-center gap-2">
+              {submitting ? (
+                <>
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                  </svg>
+                  Confirming…
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Confirm Booking — Pay on Arrival
+                </>
+              )}
             </button>
           </div>
         </div>

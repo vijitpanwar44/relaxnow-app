@@ -23,7 +23,7 @@ export default function MassagerProfile() {
     )
   }
 
-  const { name, gender, age, experience, rating, reviews, specialties, bio, price, location, photo, avatar, color, accentColor, languages } = massager
+  const { name, gender, age, experience, rating, reviews, specialties, bio, price, location, photo, avatar, color, accentColor, languages, badges = [] } = massager
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-10">
@@ -36,18 +36,19 @@ export default function MassagerProfile() {
 
       {/* Profile Header */}
       <div className="card mb-6 overflow-hidden">
-        {/* Cover / Photo banner */}
-        {photo ? (
-          <div className="h-52 w-full relative overflow-hidden">
-            <img src={photo} alt={name} className="w-full h-full object-cover object-center" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-          </div>
-        ) : (
-          <div className="h-40 w-full" style={{ background: `linear-gradient(135deg, ${color} 0%, ${accentColor}33 100%)` }} />
-        )}
+        {/* Banner */}
+        <div className="relative">
+          {photo ? (
+            <div className="h-48 w-full relative overflow-hidden">
+              <img src={photo} alt={name} className="w-full h-full object-cover object-center" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+            </div>
+          ) : (
+            <div className="h-36 w-full" style={{ background: `linear-gradient(135deg, ${color} 0%, ${accentColor}33 100%)` }} />
+          )}
 
-        <div className="px-6 pb-6 -mt-14 relative">
-          <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4">
+          {/* Avatar — half-pops below the banner */}
+          <div className="absolute bottom-0 left-6 translate-y-1/2">
             {photo ? (
               <img
                 src={photo}
@@ -62,7 +63,13 @@ export default function MassagerProfile() {
                 {avatar}
               </div>
             )}
-            <div className="flex-1 pb-1">
+          </div>
+        </div>
+
+        {/* Content — padded top so text starts below the avatar */}
+        <div className="px-6 pb-6 pt-16">
+          <div className="flex flex-col sm:flex-row items-start gap-4">
+            <div className="flex-1">
               <div className="flex items-center gap-3 flex-wrap">
                 <h1 className="text-3xl font-bold text-stone-800">{name}</h1>
                 <span className={`px-3 py-1 rounded-full text-sm font-semibold ${gender === 'female' ? 'bg-pink-100 text-pink-700' : 'bg-blue-100 text-blue-700'}`}>
@@ -86,8 +93,22 @@ export default function MassagerProfile() {
                   {location}
                 </span>
               </div>
+              {badges.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {badges.includes('id_verified') && (
+                    <span className="inline-flex items-center gap-1.5 text-sm bg-green-100 text-green-700 border border-green-200 px-3 py-1 rounded-full font-semibold">
+                      ✓ ID Verified
+                    </span>
+                  )}
+                  {badges.includes('certified') && (
+                    <span className="inline-flex items-center gap-1.5 text-sm bg-amber-100 text-amber-700 border border-amber-200 px-3 py-1 rounded-full font-semibold">
+                      🎓 Certified Professional
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
-            <div className="sm:ml-auto text-right">
+            <div className="text-right shrink-0">
               <p className="text-xs text-stone-400 mb-1">Session starts from</p>
               <p className="text-3xl font-bold text-amber-700">₹{price.toLocaleString()}</p>
               <button
