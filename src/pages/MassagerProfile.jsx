@@ -26,8 +26,8 @@ export default function MassagerProfile() {
   const { name, gender, age, experience, rating, reviews, specialties, bio, price, location, photo, avatar, color, accentColor, languages, badges = [] } = massager
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10">
-      <Link to="/massagers" className="inline-flex items-center gap-2 text-stone-500 hover:text-stone-800 mb-6 text-sm transition-colors">
+    <div className="max-w-5xl mx-auto px-4 py-4 md:py-10">
+      <Link to="/massagers" className="inline-flex items-center gap-2 text-stone-500 hover:text-stone-800 mb-4 text-sm transition-colors">
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
@@ -204,8 +204,8 @@ export default function MassagerProfile() {
         </div>
       </div>
 
-      {/* Book CTA */}
-      <div className="mt-6 bg-gradient-to-r from-amber-50 to-amber-100 border border-amber-200 rounded-2xl p-6 flex items-center justify-between gap-4 flex-wrap">
+      {/* Book CTA — desktop */}
+      <div className="hidden md:flex mt-6 bg-gradient-to-r from-amber-50 to-amber-100 border border-amber-200 rounded-2xl p-6 items-center justify-between gap-4 flex-wrap">
         <div>
           <h3 className="font-bold text-stone-800 text-lg">Ready to book with {name}?</h3>
           <p className="text-stone-500 text-sm mt-1">Pick a date and time that works for you</p>
@@ -216,6 +216,24 @@ export default function MassagerProfile() {
         >
           Book Now — ₹{price.toLocaleString()}
         </button>
+      </div>
+
+      {/* Mobile sticky book bar — sits above bottom nav */}
+      <div
+        className="md:hidden fixed bottom-14 left-0 right-0 z-40 bg-white border-t border-stone-200 px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]"
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs text-stone-400">Session from</p>
+            <p className="text-xl font-bold text-amber-700">₹{price.toLocaleString()}</p>
+          </div>
+          <button
+            onClick={() => navigate(`/book/${id}`)}
+            className="btn-primary"
+          >
+            Book Session
+          </button>
+        </div>
       </div>
     </div>
   )

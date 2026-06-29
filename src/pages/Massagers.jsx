@@ -90,10 +90,10 @@ export default function Massagers() {
     : sortOptions.filter(o => o.value !== 'nearest')
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-stone-800 mb-2">Find Your Massager</h1>
-        <p className="text-stone-500">Browse certified professionals and book your perfect session</p>
+    <div className="max-w-6xl mx-auto px-4 py-6 md:py-10">
+      <div className="mb-5">
+        <h1 className="text-2xl md:text-4xl font-bold text-stone-800 mb-1">Find Your Massager</h1>
+        <p className="text-stone-500 text-sm md:text-base">Browse certified professionals near you</p>
       </div>
 
       {/* Location Banner */}
@@ -138,53 +138,53 @@ export default function Massagers() {
         </div>
       )}
 
-      {/* Filters Bar */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm mb-8 flex flex-col sm:flex-row gap-4">
-        {/* Search */}
-        <div className="flex-1 relative">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
-          </svg>
-          <input
-            type="text"
-            placeholder="Search by name or specialty..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent"
-          />
-        </div>
+      {/* Search */}
+      <div className="relative mb-3">
+        <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+        </svg>
+        <input
+          type="text"
+          placeholder="Search by name or specialty..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full pl-10 pr-4 py-3 border border-stone-200 rounded-2xl bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent"
+        />
+      </div>
 
-        {/* Gender Filter */}
-        <div className="flex gap-2">
-          {['all', 'female', 'male'].map((g) => (
-            <button
-              key={g}
-              onClick={() => handleGender(g)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all border-2 ${
-                genderFilter === g
-                  ? g === 'female'
-                    ? 'bg-pink-500 border-pink-500 text-white'
-                    : g === 'male'
-                    ? 'bg-blue-600 border-blue-600 text-white'
-                    : 'bg-stone-800 border-stone-800 text-white'
-                  : 'border-stone-200 text-stone-600 hover:border-stone-300'
-              }`}
-            >
-              {g === 'all' ? 'All' : g === 'female' ? '♀ Female' : '♂ Male'}
-            </button>
-          ))}
-        </div>
-
-        {/* Sort */}
-        <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-          className="px-4 py-2.5 border-2 border-stone-200 rounded-xl text-sm font-medium text-stone-600 focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white"
-        >
-          {effectiveSortOptions.map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
+      {/* Filter chips row — horizontal scroll on mobile */}
+      <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 mb-6">
+        {['all', 'female', 'male'].map((g) => (
+          <button
+            key={g}
+            onClick={() => handleGender(g)}
+            className={`shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all border-2 ${
+              genderFilter === g
+                ? g === 'female'
+                  ? 'bg-pink-500 border-pink-500 text-white'
+                  : g === 'male'
+                  ? 'bg-blue-600 border-blue-600 text-white'
+                  : 'bg-stone-800 border-stone-800 text-white'
+                : 'border-stone-200 bg-white text-stone-600 hover:border-stone-300'
+            }`}
+          >
+            {g === 'all' ? 'All' : g === 'female' ? '♀ Female' : '♂ Male'}
+          </button>
+        ))}
+        <div className="shrink-0 h-8 w-px bg-stone-200 self-center" />
+        {effectiveSortOptions.map((o) => (
+          <button
+            key={o.value}
+            onClick={() => setSortBy(o.value)}
+            className={`shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all border-2 ${
+              sortBy === o.value
+                ? 'bg-amber-600 border-amber-600 text-white'
+                : 'border-stone-200 bg-white text-stone-600 hover:border-stone-300'
+            }`}
+          >
+            {o.label}
+          </button>
+        ))}
       </div>
 
       {/* Results Count */}

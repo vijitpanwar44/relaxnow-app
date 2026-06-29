@@ -30,42 +30,42 @@ export default function Home() {
           <div className="absolute top-10 left-10 w-64 h-64 bg-amber-400 rounded-full blur-3xl" />
           <div className="absolute bottom-10 right-10 w-96 h-96 bg-stone-400 rounded-full blur-3xl" />
         </div>
-        <div className="relative max-w-6xl mx-auto px-4 py-24 sm:py-32">
+        <div className="relative max-w-6xl mx-auto px-4 py-14 sm:py-28">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm mb-6 border border-white/20">
-              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs sm:text-sm mb-4 sm:mb-6 border border-white/20">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse shrink-0" />
               Professional massagers available today
             </div>
-            <h1 className="text-5xl sm:text-6xl font-bold mb-6 leading-tight">
+            <h1 className="text-4xl sm:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
               Your Perfect
               <span className="block text-amber-400">Relaxation</span>
               Awaits
             </h1>
-            <p className="text-lg text-stone-300 mb-10 leading-relaxed">
-              Choose from our certified male and female massage therapists. Book your ideal session with transparent pricing and flexible time slots.
+            <p className="text-base sm:text-lg text-stone-300 mb-7 sm:mb-10 leading-relaxed">
+              Certified male and female massage therapists — at your home, transparent pricing, flexible slots.
             </p>
-            <div className="flex flex-col sm:flex-row flex-wrap gap-4">
+            <div className="grid grid-cols-1 sm:flex sm:flex-wrap gap-3">
               <Link
                 to="/massagers?gender=female"
-                className="flex items-center justify-center gap-3 bg-pink-500 hover:bg-pink-600 text-white font-semibold px-8 py-4 rounded-xl transition-all shadow-lg hover:shadow-xl active:scale-95"
+                className="flex items-center justify-center gap-2.5 bg-pink-500 hover:bg-pink-600 text-white font-semibold px-6 py-4 rounded-2xl transition-all shadow-lg active:scale-95"
               >
                 <span className="text-xl">♀</span>
                 Female Massagers
               </Link>
               <Link
                 to="/massagers?gender=male"
-                className="flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-xl transition-all shadow-lg hover:shadow-xl active:scale-95"
+                className="flex items-center justify-center gap-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-4 rounded-2xl transition-all shadow-lg active:scale-95"
               >
                 <span className="text-xl">♂</span>
                 Male Massagers
               </Link>
               <Link
                 to="/spas"
-                className="flex items-center justify-center gap-3 bg-amber-600 hover:bg-amber-500 text-white font-semibold px-8 py-4 rounded-xl transition-all shadow-lg hover:shadow-xl active:scale-95 relative"
+                className="flex items-center justify-center gap-2.5 bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-4 rounded-2xl transition-all border border-white/30 active:scale-95 relative"
               >
                 <span className="text-xl">🧖</span>
                 Visit a Spa
-                <span className="absolute -top-2 -right-2 bg-white text-amber-600 text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none shadow">Soon</span>
+                <span className="absolute -top-2 -right-2 bg-amber-400 text-stone-900 text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none shadow">Soon</span>
               </Link>
             </div>
           </div>

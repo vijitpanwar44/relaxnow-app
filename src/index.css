@@ -3,15 +3,52 @@
 @layer base {
   * {
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
   }
   body {
     font-family: 'Inter', sans-serif;
     background-color: #faf9f7;
     color: #1a1a1a;
+    overscroll-behavior-y: none;
   }
   h1, h2, h3 {
     font-family: 'Playfair Display', serif;
   }
+  /* Prevent iOS zoom on input focus */
+  input, select, textarea {
+    font-size: 16px;
+  }
+  @media (min-width: 640px) {
+    input, select, textarea {
+      font-size: 14px;
+    }
+  }
+  /* Hide scrollbar for horizontal scroll containers */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+@keyframes page-fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes shimmer-slide {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(400%);  }
+}
+
+@keyframes app-loader-out {
+  from { opacity: 1; }
+  to   { opacity: 0; pointer-events: none; }
+}
+
+.page-enter {
+  animation: page-fade-up 0.22s ease-out both;
+}
+
+.shimmer-bar {
+  animation: shimmer-slide 1.4s ease-in-out infinite;
 }
 
 @layer components {

@@ -83,10 +83,14 @@ export function AuthProvider({ children }) {
     if (session) await signOut()
   }
 
+  // Auth SDK has finished loading
   const authReady = !!massagerUser || isLoaded
 
+  // Clerk user is signed in but token not yet cached — hold off redirecting
+  const isAuthenticating = !massagerUser && isLoaded && !!clerkUser && !tokenReady
+
   return (
-    <AuthContext.Provider value={{ user, loginMassager, logout, authReady }}>
+    <AuthContext.Provider value={{ user, loginMassager, logout, authReady, isAuthenticating }}>
       {children}
     </AuthContext.Provider>
   )

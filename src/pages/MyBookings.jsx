@@ -22,13 +22,13 @@ export default function MyBookings() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10">
-      <div className="flex items-center justify-between mb-8">
+    <div className="max-w-4xl mx-auto px-4 py-6 md:py-10">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-4xl font-bold text-stone-800 mb-1">My Bookings</h1>
-          <p className="text-stone-500">{bookings.length} session{bookings.length !== 1 ? 's' : ''} booked</p>
+          <h1 className="text-2xl md:text-4xl font-bold text-stone-800 mb-0.5">My Bookings</h1>
+          <p className="text-stone-500 text-sm">{bookings.length} session{bookings.length !== 1 ? 's' : ''} booked</p>
         </div>
-        <Link to="/massagers" className="btn-primary">+ New Booking</Link>
+        <Link to="/massagers" className="btn-primary text-sm py-2.5 px-4">+ Book</Link>
       </div>
 
       <div className="space-y-4">

@@ -120,7 +120,7 @@ export default function BookingPage() {
         Back to profile
       </Link>
 
-      <h1 className="text-3xl font-bold text-stone-800 mb-8">Book a Session</h1>
+      <h1 className="text-2xl md:text-3xl font-bold text-stone-800 mb-6">Book a Session</h1>
 
       {/* Massager Summary */}
       <div className="bg-white rounded-2xl p-4 shadow-sm mb-8 flex items-center gap-4">
@@ -172,8 +172,8 @@ export default function BookingPage() {
       {/* Step 1: Date & Time */}
       {step === 1 && (
         <div className="card p-6">
-          <h3 className="text-xl font-semibold text-stone-800 mb-6">Select Date</h3>
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2 mb-8">
+          <h3 className="text-lg md:text-xl font-semibold text-stone-800 mb-4">Select Date</h3>
+          <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 -mx-1 px-1 mb-6">
             {dates.map((date) => {
               const key = formatDate(date)
               const isSelected = selectedDate && formatDate(selectedDate) === key
@@ -181,15 +181,15 @@ export default function BookingPage() {
                 <button
                   key={key}
                   onClick={() => { setSelectedDate(date); setSelectedSlot(null) }}
-                  className={`p-3 rounded-xl text-center transition-all border-2 ${
+                  className={`shrink-0 w-16 py-3 rounded-2xl text-center transition-all border-2 ${
                     isSelected
                       ? 'bg-amber-600 border-amber-600 text-white'
                       : 'border-stone-200 hover:border-amber-400 text-stone-700'
                   }`}
                 >
-                  <div className="text-xs font-medium">{date.toLocaleDateString('en-IN', { weekday: 'short' })}</div>
-                  <div className="text-lg font-bold my-0.5">{date.getDate()}</div>
-                  <div className="text-xs">{date.toLocaleDateString('en-IN', { month: 'short' })}</div>
+                  <div className="text-[10px] font-semibold uppercase tracking-wide opacity-75">{date.toLocaleDateString('en-IN', { weekday: 'short' })}</div>
+                  <div className="text-xl font-bold my-0.5">{date.getDate()}</div>
+                  <div className="text-[10px] opacity-75">{date.toLocaleDateString('en-IN', { month: 'short' })}</div>
                 </button>
               )
             })}
@@ -209,7 +209,7 @@ export default function BookingPage() {
                   Checking availability…
                 </div>
               ) : availableSlots.length > 0 ? (
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2.5">
                   {availableSlots.map((slot) => (
                     <button
                       key={slot}
