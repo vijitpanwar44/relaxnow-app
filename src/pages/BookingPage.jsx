@@ -55,16 +55,19 @@ export default function BookingPage() {
     )
   }
 
-  // Fetch available slots from API when date changes
+  const DEFAULT_SLOTS = ['09:00', '10:30', '12:00', '13:30', '15:00', '16:30', '18:00']
+
+  // Fetch available slots from API; fall back to massager data if backend unavailable
   useEffect(() => {
     if (!selectedDate || !massager) return
     const dateKey = formatDate(selectedDate)
     setSlotsLoading(true)
     setApiSlots([])
+    const fallback = massager.timeSlots?.[dateKey] || DEFAULT_SLOTS
     fetch(`/api/massagers/${massager.id}/slots?date=${dateKey}`)
-      .then(r => r.json())
-      .then(({ slots }) => { setApiSlots(slots || []); setSlotsLoading(false) })
-      .catch(() => { setApiSlots([]); setSlotsLoading(false) })
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(({ slots }) => { setApiSlots(slots?.length ? slots : fallback); setSlotsLoading(false) })
+      .catch(() => { setApiSlots(fallback); setSlotsLoading(false) })
   }, [selectedDate, massager?.id])
 
   const dates = getDatesForNext7Days()
