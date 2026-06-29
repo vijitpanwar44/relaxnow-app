@@ -6,21 +6,25 @@ const AuthContext = createContext(null)
 const MASSAGER_KEY = 'rn_massager_token'
 const CLERK_TOKEN_KEY = 'rn_clerk_token'
 
-function parseJwt(token) {
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]))
-    if (payload.exp && payload.exp * 1000 < Date.now()) return null
-    return payload
-  } catch { return null }
-}
+// Hardcoded massager accounts (frontend-only, demo app)
+const MASSAGER_ACCOUNTS = [
+  { massagerId: 1,  email: 'priya@relaxnow.com',  name: 'Priya Sharma',  password: 'relax@123' },
+  { massagerId: 3,  email: 'kavya@relaxnow.com',  name: 'Kavya Nair',    password: 'relax@123' },
+  { massagerId: 4,  email: 'rahul@relaxnow.com',  name: 'Rahul Mehta',   password: 'relax@123' },
+  { massagerId: 5,  email: 'arjun@relaxnow.com',  name: 'Arjun Kapoor',  password: 'relax@123' },
+  { massagerId: 6,  email: 'vikram@relaxnow.com', name: 'Vikram Singh',  password: 'relax@123' },
+  { massagerId: 7,  email: 'meera@relaxnow.com',  name: 'Meera Joshi',   password: 'relax@123' },
+  { massagerId: 8,  email: 'sakura@relaxnow.com', name: 'Sakura Tanaka', password: 'relax@123' },
+  { massagerId: 9,  email: 'nisha@relaxnow.com',  name: 'Nisha Patel',   password: 'relax@123' },
+  { massagerId: 10, email: 'divya@relaxnow.com',  name: 'Divya Reddy',   password: 'relax@123' },
+]
 
 function getStoredMassager() {
-  const t = localStorage.getItem(MASSAGER_KEY)
-  return t ? parseJwt(t) : null
+  try { return JSON.parse(localStorage.getItem(MASSAGER_KEY) || 'null') } catch { return null }
 }
 
 export function getToken() {
-  return localStorage.getItem(MASSAGER_KEY) || localStorage.getItem(CLERK_TOKEN_KEY) || null
+  return localStorage.getItem(CLERK_TOKEN_KEY) || null
 }
 
 export function AuthProvider({ children }) {
@@ -28,7 +32,6 @@ export function AuthProvider({ children }) {
   const { session } = useSession()
   const { signOut } = useClerk()
   const [massagerUser, setMassagerUser] = useState(getStoredMassager)
-  // tokenReady: true once the Clerk session token is cached in localStorage
   const [tokenReady, setTokenReady] = useState(() => !!localStorage.getItem(CLERK_TOKEN_KEY))
 
   useEffect(() => {
@@ -49,7 +52,6 @@ export function AuthProvider({ children }) {
     return () => clearInterval(interval)
   }, [session])
 
-  // user is only non-null once the token is available for API calls
   const user = useMemo(() => {
     if (massagerUser) return massagerUser
     if (isLoaded && clerkUser && tokenReady) return {
@@ -63,22 +65,14 @@ export function AuthProvider({ children }) {
   }, [massagerUser, isLoaded, clerkUser?.id, tokenReady])
 
   const loginMassager = async (email, password) => {
-    try {
-      const res = await fetch('/api/auth/massager/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      })
-      const data = await res.json()
-      if (res.ok) {
-        localStorage.setItem(MASSAGER_KEY, data.token)
-        setMassagerUser(parseJwt(data.token))
-        return { success: true }
-      }
-      return { success: false, error: data.error || 'Invalid email or password' }
-    } catch {
-      return { success: false, error: 'Network error. Is the server running?' }
+    const account = MASSAGER_ACCOUNTS.find(m => m.email === email && m.password === password)
+    if (account) {
+      const userData = { id: account.email, email: account.email, name: account.name, role: 'massager', massagerId: account.massagerId }
+      localStorage.setItem(MASSAGER_KEY, JSON.stringify(userData))
+      setMassagerUser(userData)
+      return { success: true }
     }
+    return { success: false, error: 'Invalid email or password' }
   }
 
   const logout = async () => {
@@ -87,7 +81,6 @@ export function AuthProvider({ children }) {
     setMassagerUser(null)
     setTokenReady(false)
     if (session) await signOut()
-    try { await fetch('/api/auth/logout', { method: 'POST' }) } catch {}
   }
 
   const authReady = !!massagerUser || isLoaded

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { useAuth, getToken } from '../context/AuthContext.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
+import { getBookingsForMassager } from '../context/BookingContext.jsx'
 import { massagers } from '../data/massagers.js'
 
 function formatDateDisplay(dateStr) {
@@ -24,35 +25,29 @@ export default function MassagerDashboard() {
     loadData()
   }, [user])
 
-  const loadData = async () => {
+  const loadData = () => {
     setLoading(true)
-    const token = getToken()
-    try {
-      const [bRes, nRes] = await Promise.all([
-        fetch('/api/bookings', { headers: { Authorization: `Bearer ${token}` } }),
-        fetch('/api/notifications', { headers: { Authorization: `Bearer ${token}` } }),
-      ])
-      if (bRes.ok) setBookings((await bRes.json()).bookings || [])
-      if (nRes.ok) setNotifications((await nRes.json()).notifications || [])
-    } finally {
-      setLoading(false)
-    }
+    setBookings(getBookingsForMassager(user?.massagerId))
+    const notifKey = `hw_notifications_${user?.massagerId}`
+    setNotifications(JSON.parse(localStorage.getItem(notifKey) || '[]'))
+    setLoading(false)
   }
 
-  const markRead = async (id) => {
-    await fetch(`/api/notifications/${id}/read`, {
-      method: 'PATCH',
-      headers: { Authorization: `Bearer ${getToken()}` },
-    })
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n))
+  const saveNotifications = (notifs) => {
+    const notifKey = `hw_notifications_${user?.massagerId}`
+    localStorage.setItem(notifKey, JSON.stringify(notifs))
   }
 
-  const markAllRead = async () => {
-    await fetch('/api/notifications/mark-all-read', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${getToken()}` },
-    })
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })))
+  const markRead = (id) => {
+    const updated = notifications.map(n => n.id === id ? { ...n, read: true } : n)
+    setNotifications(updated)
+    saveNotifications(updated)
+  }
+
+  const markAllRead = () => {
+    const updated = notifications.map(n => ({ ...n, read: true }))
+    setNotifications(updated)
+    saveNotifications(updated)
   }
 
   const handleLogout = async () => {

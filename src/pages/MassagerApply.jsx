@@ -80,20 +80,14 @@ export default function MassagerApply() {
     setLoading(true)
     setError('')
     try {
-      const res = await fetch('/api/massagers/apply', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, phone: form.phone.replace(/\D/g, '') }),
-      })
-      const data = await res.json()
-      if (res.ok) {
-        setApplicationId(data.applicationId)
-        setSubmitted(true)
-      } else {
-        setError(data.error || 'Submission failed. Please try again.')
-      }
+      const id = crypto.randomUUID()
+      const applications = JSON.parse(localStorage.getItem('hw_massager_applications') || '[]')
+      applications.push({ id, ...form, phone: form.phone.replace(/\D/g, ''), submittedAt: new Date().toISOString() })
+      localStorage.setItem('hw_massager_applications', JSON.stringify(applications))
+      setApplicationId(id)
+      setSubmitted(true)
     } catch {
-      setError('Network error. Please try again.')
+      setError('Something went wrong. Please try again.')
     }
     setLoading(false)
   }

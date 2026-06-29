@@ -1,74 +1,45 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { useAuth, getToken } from '../context/AuthContext.jsx'
+import React, { useState, useEffect } from 'react'
+import { useAuth } from '../context/AuthContext.jsx'
 
 export default function NotificationBell() {
   const { user } = useAuth()
-  const [count, setCount] = useState(0)
   const [notifications, setNotifications] = useState([])
   const [open, setOpen] = useState(false)
-  const intervalRef = useRef(null)
 
   if (user?.role !== 'massager') return null
 
-  const fetchCount = async () => {
-    try {
-      const res = await fetch('/api/notifications/unread-count', {
-        headers: { Authorization: `Bearer ${getToken()}` },
-      })
-      if (res.ok) {
-        const { count } = await res.json()
-        setCount(count)
-      }
-    } catch {}
-  }
+  const notifKey = `hw_notifications_${user.massagerId}`
 
-  const fetchNotifications = async () => {
-    try {
-      const res = await fetch('/api/notifications', {
-        headers: { Authorization: `Bearer ${getToken()}` },
-      })
-      if (res.ok) {
-        const { notifications } = await res.json()
-        setNotifications(notifications || [])
-      }
-    } catch {}
+  const load = () => {
+    const stored = JSON.parse(localStorage.getItem(notifKey) || '[]')
+    setNotifications(stored)
   }
 
   useEffect(() => {
-    fetchCount()
-    intervalRef.current = setInterval(fetchCount, 30000)
-    return () => clearInterval(intervalRef.current)
-  }, [user])
+    load()
+    const interval = setInterval(load, 10000)
+    return () => clearInterval(interval)
+  }, [user?.massagerId])
 
-  const handleOpen = async () => {
-    const next = !open
-    setOpen(next)
-    if (next) await fetchNotifications()
+  const count = notifications.filter(n => !n.read).length
+
+  const markRead = (id) => {
+    const updated = notifications.map(n => n.id === id ? { ...n, read: true } : n)
+    setNotifications(updated)
+    localStorage.setItem(notifKey, JSON.stringify(updated))
   }
 
-  const markRead = async (id) => {
-    await fetch(`/api/notifications/${id}/read`, {
-      method: 'PATCH',
-      headers: { Authorization: `Bearer ${getToken()}` },
-    })
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n))
-    setCount(prev => Math.max(0, prev - 1))
-  }
-
-  const markAllRead = async (e) => {
+  const markAllRead = (e) => {
     e.stopPropagation()
-    await fetch('/api/notifications/mark-all-read', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${getToken()}` },
-    })
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })))
-    setCount(0)
+    const updated = notifications.map(n => ({ ...n, read: true }))
+    setNotifications(updated)
+    localStorage.setItem(notifKey, JSON.stringify(updated))
   }
 
   return (
     <div className="relative">
       <button
-        onClick={handleOpen}
+        onClick={() => { setOpen(o => !o); load() }}
         className="relative p-2 rounded-lg text-stone-600 hover:bg-stone-100 transition-colors"
         title="Notifications"
       >
@@ -114,9 +85,7 @@ export default function NotificationBell() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-stone-800">{n.title}</p>
                       <p className="text-xs text-stone-500 mt-0.5 leading-relaxed">{n.message}</p>
-                      {n.bookingNo && (
-                        <p className="text-xs text-amber-600 font-medium mt-1">Booking #{n.bookingNo}</p>
-                      )}
+                      {n.bookingNo && <p className="text-xs text-amber-600 font-medium mt-1">Booking #{n.bookingNo}</p>}
                       <p className="text-xs text-stone-400 mt-1">
                         {new Date(n.createdAt).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' })}
                       </p>
